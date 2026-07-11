@@ -761,6 +761,7 @@ do
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
     'goimports',
+    'golangci-lint',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -970,9 +971,10 @@ do
   --
   require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
-  -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.lint'
+  require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.dashboard'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

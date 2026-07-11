@@ -17,4 +17,22 @@ require('neo-tree').setup {
       },
     },
   },
+  git_status = {
+    window = {
+      position = 'float',
+    },
+  },
+}
+
+-- Automatically enable preview mode (see `:h neo-tree-preview-mode`) so files
+-- are shown as the cursor moves, without needing to press `P` first.
+local preview_enabled_wins = {}
+require('neo-tree.events').subscribe {
+  event = require('neo-tree.events').AFTER_RENDER,
+  handler = function(state)
+    if not state.winid or preview_enabled_wins[state.winid] then return end
+    preview_enabled_wins[state.winid] = true
+    state.config = { use_float = true, use_snacks_image = true, use_image_nvim = true }
+    require('neo-tree.sources.common.commands').toggle_preview(state)
+  end,
 }
