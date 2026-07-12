@@ -1,26 +1,25 @@
--- dashboard-nvim: a start screen shown when Neovim is opened with no file arguments
--- https://github.com/nvimdev/dashboard-nvim
+-- snacks.nvim dashboard: a start screen shown when Neovim is opened with no file arguments
+-- https://github.com/folke/snacks.nvim/blob/main/docs/dashboard.md
 
-vim.pack.add {
-  'https://github.com/nvimdev/dashboard-nvim',
-  'https://github.com/nvim-tree/nvim-web-devicons',
-}
+vim.pack.add { 'https://github.com/folke/snacks.nvim' }
 
-require('dashboard').setup {
-  theme = 'doom',
-  config = {
-    header = {
-      '',
-      'Neovim',
-      '',
+require('snacks').setup {
+  dashboard = {
+    enabled = true,
+    preset = {
+      keys = {
+        { icon = ' ', key = 'f', desc = 'Find File', action = function() Snacks.dashboard.pick 'files' end },
+        { icon = ' ', key = 'r', desc = 'Recent Files', action = function() Snacks.dashboard.pick 'oldfiles' end },
+        { icon = ' ', key = 'g', desc = 'Find Word', action = function() Snacks.dashboard.pick 'live_grep' end },
+        { icon = ' ', key = 'e', desc = 'File Browser', action = '<Cmd>Neotree reveal<CR>' },
+        { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
+      },
     },
-    center = {
-      { icon = '  ', desc = 'Find File', key = 'f', action = 'Telescope find_files' },
-      { icon = '  ', desc = 'Recently Used Files', key = 'r', action = 'Telescope oldfiles' },
-      { icon = '  ', desc = 'Find Word', key = 'g', action = 'Telescope live_grep' },
-      { icon = '  ', desc = 'File Browser', key = 'e', action = 'Neotree reveal' },
-      { icon = '  ', desc = 'Quit', key = 'q', action = 'qa' },
+    -- Default preset also includes a `startup` section, which assumes
+    -- lazy.nvim (for load-time stats) and errors under vim.pack -- omit it.
+    sections = {
+      { section = 'header' },
+      { section = 'keys', gap = 1, padding = 1 },
     },
-    footer = {},
   },
 }
