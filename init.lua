@@ -729,6 +729,7 @@ do
     -- clangd = {},
     gopls = {},
     jsonls = {},
+    yamlls = {},
     -- pyright = {},
     -- rust_analyzer = {},
     --
@@ -842,6 +843,7 @@ do
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
       json = { 'prettier' },
+      yaml = { 'prettier' },
     },
   }
 
@@ -945,7 +947,7 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'json', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = { 'bash', 'c', 'diff', 'html', 'json', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'yaml' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
