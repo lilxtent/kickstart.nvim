@@ -479,6 +479,18 @@ do
     },
   }
 
+  -- Session management: auto-save and restore open files
+  vim.pack.add { gh 'olimorris/persisted.nvim' }
+  require('persisted').setup {
+    autosave = true,
+    autoload = true,
+    use_git_branch = true, -- separate sessions per git branch
+  }
+
+  -- Claude Code integration
+  vim.pack.add { gh 'coder/claudecode.nvim' }
+  require('claudecode').setup {}
+
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
 end
@@ -879,31 +891,13 @@ do
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
   require('blink.cmp').setup {
     keymap = {
-      -- 'default' (recommended) for mappings similar to built-in completions
-      --   <c-y> to accept ([y]es) the completion.
-      --    This will auto-import if your LSP supports it.
-      --    This will expand snippets if the LSP sent a snippet.
-      -- 'super-tab' for tab to accept
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- For an understanding of why the 'default' preset is recommended,
-      -- you will need to read `:help ins-completion`
-      --
-      -- No, but seriously. Please read `:help ins-completion`, it is really good!
-      --
-      -- All presets have the following mappings:
-      -- <tab>/<s-tab>: move to right/left of your snippet expansion
-      -- <c-space>: Open menu or open docs if already open
-      -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-      -- <c-e>: Hide menu
-      -- <c-k>: Toggle signature help
-      --
-      -- See `:help blink-cmp-config-keymap` for defining your own keymap
-      preset = 'default',
-
-      -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-      --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+      preset = 'none',
+      ['<Tab>'] = { 'select_next', 'fallback' },
+      ['<S-Tab>'] = { 'select_prev', 'fallback' },
+      ['<CR>'] = { 'accept', 'fallback' },
+      ['<C-space>'] = { 'show', 'hide' },
+      ['<C-e>'] = { 'hide' },
+      ['<C-k>'] = { 'show_signature' },
     },
 
     appearance = {
