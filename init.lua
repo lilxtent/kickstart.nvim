@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -432,18 +432,20 @@ do
   -- - sr)'  - [S]urround [R]eplace [)] [']
   require('mini.surround').setup()
 
-  -- Simple and easy statusline.
-  --  You could remove this setup call if you don't like it,
-  --  and try some other statusline plugin
-  local statusline = require 'mini.statusline'
-  -- Set `use_icons` to true if you have a Nerd Font
-  statusline.setup { use_icons = vim.g.have_nerd_font }
-
-  -- You can configure sections in the statusline by overriding their
-  -- default behavior. For example, here we set the section for
-  -- cursor location to LINE:COLUMN
-  ---@diagnostic disable-next-line: duplicate-set-field
-  statusline.section_location = function() return '%2l:%-2v' end
+  -- Statusline
+  vim.pack.add { gh 'nvim-lualine/lualine.nvim' }
+  require('lualine').setup {
+    options = {
+      theme = 'catppuccin-nvim', -- provided by catppuccin.nvim; follows whichever flavour is active
+      icons_enabled = vim.g.have_nerd_font,
+      component_separators = { left = '', right = '' },
+      section_separators = { left = '', right = '' },
+    },
+    sections = {
+      lualine_c = { { 'filename', path = 1 } }, -- relative path instead of just the filename
+      lualine_x = { 'diagnostics', 'encoding', 'filetype' },
+    },
+  }
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
