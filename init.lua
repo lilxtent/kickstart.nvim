@@ -251,6 +251,38 @@ do
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
   })
+
+  -- Autosave: periodically write modified file buffers, and on leaving a buffer,
+  -- losing focus, or exiting Neovim. Uses a dedicated timer rather than
+  -- `updatetime`/`CursorHold` so it doesn't interfere with other things tied to
+  -- those (e.g. the LSP document-highlight autocmd further down).
+  local function autosave_buf(buf)
+    if vim.bo[buf].buftype == '' and vim.api.nvim_buf_get_name(buf) ~= '' and vim.bo[buf].modified then
+      vim.api.nvim_buf_call(buf, function() vim.cmd 'update' end)
+    end
+  end
+
+  local autosave_interval_ms = 5000
+  local autosave_timer = vim.uv.new_timer()
+  autosave_timer:start(
+    autosave_interval_ms,
+    autosave_interval_ms,
+    vim.schedule_wrap(function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        autosave_buf(buf)
+      end
+    end)
+  )
+
+  vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'VimLeavePre' }, {
+    desc = 'Autosave modified file buffers when leaving them, losing focus, or exiting Neovim',
+    group = vim.api.nvim_create_augroup('kickstart-autosave-on-leave', { clear = true }),
+    callback = function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        autosave_buf(buf)
+      end
+    end,
+  })
 end
 
 -- ============================================================

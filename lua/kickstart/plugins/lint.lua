@@ -18,7 +18,9 @@ lint.linters_by_ft = {
 -- defined in sibling files in the same package show up as "undefined".
 -- Always lint the buffer's own directory instead, regardless of cwd.
 local golangcilint = lint.linters.golangcilint
-if golangcilint and golangcilint.args then golangcilint.args[#golangcilint.args] = function() return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h') end end
+if golangcilint and golangcilint.args then
+  golangcilint.args[#golangcilint.args] = function() return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h') end
+end
 
 -- To allow other plugins to add linters to require('lint').linters_by_ft,
 -- instead set linters_by_ft like this:
