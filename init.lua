@@ -730,6 +730,8 @@ do
     gopls = {},
     jsonls = {},
     yamlls = {},
+    dockerls = {},
+    bashls = {},
     -- pyright = {},
     -- rust_analyzer = {},
     --
@@ -799,6 +801,8 @@ do
     'goimports',
     'golangci-lint',
     'prettier',
+    'shfmt', -- Shell script formatter
+    'shellcheck', -- Shell script linter (picked up automatically by bashls)
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -844,6 +848,8 @@ do
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
       json = { 'prettier' },
       yaml = { 'prettier' },
+      sh = { 'shfmt' },
+      bash = { 'shfmt' },
     },
   }
 
@@ -947,7 +953,7 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'json', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'yaml' }
+  local parsers = { 'bash', 'c', 'diff', 'dockerfile', 'html', 'json', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'yaml' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
