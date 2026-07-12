@@ -41,9 +41,16 @@ When adding an LSP server, add an entry to the `servers` table in SECTION 6 — 
 
 ## Extension points
 
-- `lua/kickstart/plugins/*.lua`: optional, stock example modules (debug, indent_line, lint, autopairs, neo-tree, gitsigns-extra-keymaps). Disabled by default — enabled by uncommenting the matching `require 'kickstart.plugins.X'` line in SECTION 10.
+- `lua/kickstart/plugins/*.lua`: optional modules, each toggled by uncommenting its `require 'kickstart.plugins.X'` line in SECTION 10. Currently enabled: `debug` (nvim-dap + nvim-dap-go), `lint` (nvim-lint), `autopairs`, `neo-tree`, `dashboard` (dashboard-nvim), `neotest` (neotest + neotest-go). Left disabled: the stock `indent_line` example, and `gitsigns` (see below for why).
+  - `gitsigns.lua` is intentionally left disabled even though its code is present: enabling it would call `gitsigns.setup{}` a second time, and `setup()` does not merge across calls — the second call would silently drop the custom sign glyphs configured in SECTION 4. Its recommended keymaps (`]c`/`[c` hunk nav, `<leader>h*` actions, `<leader>tb`/`tw` toggles, `ih` text object) are merged directly into SECTION 4's single `gitsigns.setup` call instead. Apply this same merge-not-duplicate pattern for any other stub that would double-`setup()` a plugin already configured elsewhere.
 - `lua/custom/plugins/`: this fork's own plugins/overrides. `lua/custom/plugins/init.lua` auto-`require`s every `*.lua` file in that directory (except itself) via `vim.fs.dir` with `follow = true` (symlinks included) — just drop a new file in, no manual wiring needed. Loaded only when SECTION 10's `require 'custom.plugins'` line is uncommented.
 - `lua/kickstart/health.lua`: back the `:checkhealth kickstart` command; extend it if adding new external-tool dependencies.
+
+## Go tooling
+
+- LSP: `gopls` (SECTION 6 `servers` table, `init.lua`). Formatting: `goimports` via conform.nvim (SECTION 7) — Mason-installed via the explicit `ensure_installed` extension list in SECTION 6 (it's a formatter, not an LSP server, so `vim.tbl_keys(servers)` doesn't cover it; `golangci-lint` is added there too).
+- Testing: `neotest` + `neotest-go` (`lua/kickstart/plugins/neotest.lua`), wired to debug via `nvim-dap-go`. Keymaps: `<leader>tt` run nearest, `<leader>tf` run file, `<leader>td` debug nearest, `<leader>ts` toggle summary, `<leader>to`/`<leader>tO` show output/output panel.
+- Linting gotcha: `nvim-lint`'s bundled `golangcilint` linter decides whether to lint the buffer's directory or just the single file by running `go env GOMOD` — but that check, like nvim-lint's own invocation, uses Neovim's global `getcwd()`, not the buffer's directory. In a `go.work` multi-module workspace, launching Neovim from the workspace root (no `go.mod` there) makes `go env GOMOD` report `/dev/null`, so nvim-lint wrongly lints the file in isolation, and symbols defined in sibling files in the same package show up as false "undefined" errors. This is not fixable via `.golangci.yml` (the bad decision happens before golangci-lint is even invoked) and is unrelated to gopls (the diagnostics come from golangci-lint's own `typecheck` pass, not the LSP). Worked around in `lua/kickstart/plugins/lint.lua` by patching the linter's frozen `args` table (computed once at `require` time) to always target the buffer's directory.
 
 ## Editing conventions
 
