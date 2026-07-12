@@ -975,6 +975,7 @@ do
   require 'kickstart.plugins.autopairs'
   require 'kickstart.plugins.neo-tree'
   require 'kickstart.plugins.dashboard'
+  require 'kickstart.plugins.neotest'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

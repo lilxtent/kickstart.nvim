@@ -10,6 +10,12 @@ vim.pack.add {
 vim.keymap.set('n', '\\', '<Cmd>Neotree reveal<CR>', { desc = 'NeoTree reveal', silent = true })
 
 require('neo-tree').setup {
+  event_handlers = {
+    {
+      event = 'file_opened',
+      handler = function() require('neo-tree.command').execute { action = 'close' } end,
+    },
+  },
   filesystem = {
     window = {
       mappings = {
