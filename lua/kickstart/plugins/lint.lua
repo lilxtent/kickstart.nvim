@@ -8,6 +8,18 @@ lint.linters_by_ft = {
   go = { 'golangcilint' }, -- Make sure to install `golangci-lint` via mason
 }
 
+-- Work around a bug in nvim-lint's bundled golangci-lint definition: it
+-- decides whether to lint the buffer's directory or just the single file
+-- based on `go env GOMOD`, but that check (like nvim-lint's own invocation)
+-- runs with Neovim's global cwd, not the buffer's directory. In a go.work
+-- multi-module workspace, if Neovim's cwd is the workspace root (no go.mod
+-- of its own), `go env GOMOD` reports `/dev/null` there, so nvim-lint wrongly
+-- concludes "standalone file" and lints it in isolation -- making symbols
+-- defined in sibling files in the same package show up as "undefined".
+-- Always lint the buffer's own directory instead, regardless of cwd.
+local golangcilint = lint.linters.golangcilint
+if golangcilint and golangcilint.args then golangcilint.args[#golangcilint.args] = function() return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h') end end
+
 -- To allow other plugins to add linters to require('lint').linters_by_ft,
 -- instead set linters_by_ft like this:
 -- lint.linters_by_ft = lint.linters_by_ft or {}
