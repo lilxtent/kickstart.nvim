@@ -14,7 +14,7 @@ vim.pack.add {
 
 require('neotest').setup {
   adapters = {
-    require 'neotest-golang',
+    require 'neotest-golang' {},
   },
 }
 
