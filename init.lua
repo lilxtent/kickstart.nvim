@@ -174,6 +174,9 @@ do
 
   -- Global statusline at bottom that doesn't move between buffers
   vim.o.laststatus = 3
+
+  -- Always show tabline with open buffer names at the top
+  vim.o.showtabline = 2
 end
 
 -- ============================================================
