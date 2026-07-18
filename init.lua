@@ -172,6 +172,9 @@ do
   -- See `:help 'confirm'`
   vim.o.confirm = true
 
+  -- Automatically reload files when changed externally
+  vim.o.autoread = true
+
   -- Global statusline at bottom that doesn't move between buffers
   vim.o.laststatus = 3
 
@@ -256,6 +259,20 @@ do
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+  })
+
+  -- Reload files when Neovim regains focus (useful when Claude edits files externally)
+  vim.api.nvim_create_autocmd('FocusGained', {
+    desc = 'Reload files when window regains focus',
+    group = vim.api.nvim_create_augroup('kickstart-focus-reload', { clear = true }),
+    command = 'checktime',
+  })
+
+  -- Check for file changes every 250ms (updatetime) while editing
+  vim.api.nvim_create_autocmd('CursorHold', {
+    desc = 'Check for file changes while editing',
+    group = vim.api.nvim_create_augroup('kickstart-cursor-hold-reload', { clear = true }),
+    command = 'checktime',
   })
 
   -- Autosave: periodically write modified file buffers, and on leaving a buffer,

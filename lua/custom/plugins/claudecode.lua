@@ -28,9 +28,7 @@ map('v', '<leader>as', '<cmd>ClaudeCodeSend<cr>', { desc = 'Send to Claude' })
 -- File explorer context (neo-tree, oil, etc.)
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'NvimTree', 'neo-tree', 'oil', 'minifiles', 'netrw', 'snacks_picker_list' },
-  callback = function()
-    map('n', '<leader>as', '<cmd>ClaudeCodeTreeAdd<cr>', { desc = 'Add file', buffer = 0 })
-  end,
+  callback = function() map('n', '<leader>as', '<cmd>ClaudeCodeTreeAdd<cr>', { desc = 'Add file', buffer = 0 }) end,
 })
 
 -- Diff management
